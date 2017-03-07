@@ -21,6 +21,13 @@ class Network{
         hidden.setUp();
         output.setUp(9);
     }
+    public double encode(int[][] img){
+        double[] hiddenOutput;
+        hiddenOutput = hidden.encode(img);
+        return output.encode(hiddenOutput);
+        
+    }
+    
 }
 
 class hiddenLayer{
@@ -41,6 +48,13 @@ class hiddenLayer{
         hiddenNodes[7].setUp(43, 80, 86, 119);
         hiddenNodes[8].setUp(86, 80, 127, 119);
     }
+    public double[] encode(int img[][]){
+        double[] answer = new double[hiddenNodes.length];
+        for(int i = 0; i < answer.length; i++){
+            answer[i] = hiddenNodes[i].encode(img);
+        }
+        return answer;
+    }
 }
 
 class OutputNode{
@@ -50,7 +64,21 @@ class OutputNode{
         Random r = new Random();
         weights = new double[hiddenNum];
         for(int i = 0; i < hiddenNum; i++)
-            weights[i] = r.nextDouble();
+            weights[i] = -1 + 2 * r.nextDouble();
+    }
+    public double encode(double[] inputs){
+        double sum = 0;
+        for(int i = 0; i < inputs.length; i++){
+            sum += inputs[i] * weights[i];
+        }
+        return g(sum);
+    }    
+    
+    public static double g(double x){
+        return 1/(1 + Math.pow(Math.E, -x));
+    }
+    public static double gPrime(double x){
+        return g(x) * (1 - g(x));
     }
 }
 
@@ -75,6 +103,22 @@ class HiddenNode{
                 weights[i][j] = -1 + 2 * r.nextDouble();
             }
     }
+    public double encode(int[][] img){
+        int sum = 0;
+        for(int x = topleftx; x < bottomrightx; x++){
+            for(int y = toplefty; y < bottomrighty; y++){
+                sum += weights[x - topleftx][y - toplefty] * img[x][y];
+            }
+        }
+        return g(sum);
+    }
+    
+    public static double g(double x){
+        return 1/(1 + Math.pow(Math.E, -x));
+    }
+    public static double gPrime(double x){
+        return g(x) * (1 - g(x));
+    }
 }
 
 public class NNProject {
@@ -82,13 +126,16 @@ public class NNProject {
     /**
      * @param args the command line arguments
      */
+    
+    static Network brain;
+    
     public static void main(String[] args ) {
         // TODO code application logic here
 	if(args.length == 0) {
 		System.out.println("You put in no arguments noob");
 		return;
 	}
-        Network brain = new Network();
+        brain = new Network();
         
 	if(args[0].equals("-train")) {
             brain.setUp();
@@ -149,16 +196,10 @@ public class NNProject {
         return picture;
     }
     
-    public static double g(double x){
-        return 1/(1 + Math.pow(Math.E, -x));
-    }
     
-    public static double gPrime(double x){
-        return g(x) * (1 - g(x));
-    }
     
     public static void trainNN(int[][] img, int answer){
-        
+        System.out.println(brain.encode(img));
     }
     
     public static void testNN(int[][] img){
