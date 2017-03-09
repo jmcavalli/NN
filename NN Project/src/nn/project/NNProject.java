@@ -16,11 +16,11 @@ import java.util.*;
 class Network{
     hiddenLayer hidden = new hiddenLayer();
     OutputNode output = new OutputNode();
-    double learnRate = 0.1;
+    double learnRate = 10;
     
     public void setUp(){
         hidden.setUp();
-        output.setUp(9);
+        output.setUp(8);
     }
     public double encode(int[][] img){
         double[] hiddenOutput;
@@ -40,19 +40,19 @@ class hiddenLayer{
     HiddenNode[] hiddenNodes;
     
     public void setUp(){
-        hiddenNodes = new HiddenNode[9];
-        for(int i = 0; i < 9; i++)
+        hiddenNodes = new HiddenNode[8];
+        for(int i = 0; i < hiddenNodes.length; i++)
             hiddenNodes[i] = new HiddenNode();
         
-        hiddenNodes[0].setUp(0, 0, 43, 40);
-        hiddenNodes[1].setUp(43, 0, 86, 40);
-        hiddenNodes[2].setUp(86, 0, 127, 40);
-        hiddenNodes[3].setUp(0, 40, 43, 80);
+        hiddenNodes[0].setUp(39, 16, 89, 37);
+        hiddenNodes[1].setUp(47, 39, 61, 56);
+        hiddenNodes[2].setUp(67, 39, 80, 56);
+        hiddenNodes[3].setUp(58, 45, 71, 63);
         hiddenNodes[4].setUp(43, 40, 86, 80);
-        hiddenNodes[5].setUp(86, 40, 127, 80);
-        hiddenNodes[6].setUp(0, 80, 43, 119);
-        hiddenNodes[7].setUp(43, 80, 86, 119);
-        hiddenNodes[8].setUp(86, 80, 127, 119);
+        hiddenNodes[5].setUp(45, 61, 84, 71);
+        hiddenNodes[6].setUp(47, 69, 84, 83);
+        hiddenNodes[7].setUp(54, 79, 73, 104);
+        //hiddenNodes[8].setUp(86, 80, 127, 119);
     }
     public double[] encode(int img[][]){
         double[] answer = new double[hiddenNodes.length];
@@ -89,7 +89,7 @@ class OutputNode{
         weights = new double[hiddenNum];
         memory = new double[hiddenNum];
         for(int i = 0; i < hiddenNum; i++)
-            weights[i] = -1 + 2 * r.nextDouble();
+            weights[i] = 1;//-2 + 4 * r.nextDouble();
     }
     public double encode(double[] inputs){
         double sum = 0;
@@ -143,7 +143,7 @@ class HiddenNode{
         //prime weights with random small numbers
         for(int i  = 0; i < brx - tlx; i++)
             for(int j = 0; j < bry - tly; j++){
-                weights[i][j] = -1 + 2 * r.nextDouble();
+                weights[i][j] = 1;//-2 + 4 * r.nextDouble();
             }
     }
     public double encode(int[][] img){
@@ -197,7 +197,9 @@ public class NNProject {
 	}
 	else if(args[0].equals("-test")) {
             brain.setUp();
-            readRandom(false, 0, false);
+            for(int i = 0; i < 20; i++){
+                readRandom(false, 0, false);
+            }
             readDirectory("Female", true, 0, true);
 	}
 	else {
