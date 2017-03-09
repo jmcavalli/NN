@@ -16,6 +16,7 @@ import java.util.*;
 class Network{
     hiddenLayer hidden = new hiddenLayer();
     OutputNode output = new OutputNode();
+    double learnRate = 0.1;
     
     public void setUp(){
         hidden.setUp();
@@ -26,6 +27,11 @@ class Network{
         hiddenOutput = hidden.encode(img);
         return output.encode(hiddenOutput);
         
+    }
+    
+    public void correct(double answer, double result){
+        double[] weights = output.correct(learnRate, answer, result);
+        hidden.correct(learnRate, weights, output.delta);
     }
     
 }
@@ -55,14 +61,33 @@ class hiddenLayer{
         }
         return answer;
     }
+    
+    public void correct(double eta, double weights[], double delta){
+        for(int i = 0; i < hiddenNodes.length; i++){
+            hiddenNodes[i].delta = gPrime(hiddenNodes[i].in) * weights[i] * delta;
+            hiddenNodes[i].correct(eta);
+        }
+    }
+    public static double g(double x){
+        return 1/(1 + Math.pow(Math.E, -x));
+    }
+    
+    public static double gPrime(double x){
+        return g(x) * (1 - g(x));
+    }
 }
 
 class OutputNode{
     double[] weights;
+    double[] memory;
+    double in;
+    double a;
+    double delta;
     
     public void setUp(int hiddenNum){
         Random r = new Random();
         weights = new double[hiddenNum];
+        memory = new double[hiddenNum];
         for(int i = 0; i < hiddenNum; i++)
             weights[i] = -1 + 2 * r.nextDouble();
     }
@@ -70,9 +95,22 @@ class OutputNode{
         double sum = 0;
         for(int i = 0; i < inputs.length; i++){
             sum += inputs[i] * weights[i];
+            memory[i] = inputs[i];
         }
-        return g(sum);
-    }    
+        in = sum;
+        a = g(in);
+        return a;
+    }
+    
+    public double[] correct(double eta, double answer, double result){
+        delta = gPrime(in) * (answer - result);
+        double[] oldWeights = new double[weights.length];
+        for(int i = 0; i < weights.length; i++){
+            oldWeights[i] = weights[i];
+            weights[i] += eta * memory[i] * delta;
+        }
+        return oldWeights;
+    }
     
     public static double g(double x){
         return 1/(1 + Math.pow(Math.E, -x));
@@ -88,6 +126,10 @@ class HiddenNode{
     int bottomrightx;
     int bottomrighty;
     double[][] weights;
+    double[][] memory;
+    double in;
+    double a;
+    double delta;
     
     public void setUp(int tlx, int tly, int brx, int bry){
         topleftx = tlx;
@@ -95,6 +137,7 @@ class HiddenNode{
         bottomrightx = brx;
         bottomrighty = bry;
         weights = new double[brx - tlx][bry - tly];
+        memory = new double[brx - tlx][bry - tly];
         Random r = new Random();
         
         //prime weights with random small numbers
@@ -107,10 +150,20 @@ class HiddenNode{
         int sum = 0;
         for(int x = topleftx; x < bottomrightx; x++){
             for(int y = toplefty; y < bottomrighty; y++){
+                memory[x - topleftx][y - toplefty] = img[x][y];
                 sum += weights[x - topleftx][y - toplefty] * img[x][y];
             }
         }
-        return g(sum);
+        in = sum;
+        a = g(in);
+        return a;
+    }
+    
+    public void correct(double eta){
+        for(int x = 0; x < bottomrightx - topleftx; x++){
+            for(int y = 0; y < bottomrighty - toplefty; y++)
+                weights[x][y] += eta * memory[x][y] * delta;
+        }
     }
     
     public static double g(double x){
@@ -139,17 +192,20 @@ public class NNProject {
         
 	if(args[0].equals("-train")) {
             brain.setUp();
-            readDirectory("Female", false, -1);
-            readDirectory("Male", false, 1);
+            readDirectory("Female", false, 0, true);
+            readDirectory("Male", false, 1, true);
 	}
 	else if(args[0].equals("-test")) {
+            brain.setUp();
+            readRandom(false, 0, false);
+            readDirectory("Female", true, 0, true);
 	}
 	else {
 		System.out.println("You put in the wrong arguments noob");
 	}
     }
     
-    public static void readDirectory(String dirname, boolean test, int answer){
+    public static void readDirectory(String dirname, boolean test, double answer, boolean write){
 		File path = new File(System.getProperty("user.dir")+ "\\" + dirname + "\\" + dirname );
 		File[] img = path.listFiles();
 		for(int i = 0; 	i < img.length; i++) { //for all pictures in file
@@ -160,8 +216,76 @@ public class NNProject {
                         if(test){
                             testNN(picture);
                         }else{
-                            trainNN(picture, answer);
+                            trainNN(picture, answer, write);
                         }
+		}
+    }
+    
+    public static void readRandom(boolean test, double answer, boolean write){
+                Random r = new Random();
+		File pathM = new File(System.getProperty("user.dir")+ "\\" + "Male" + "\\" + "Male" );
+		File[] imgM = pathM.listFiles();
+                File pathF = new File(System.getProperty("user.dir")+ "\\" + "Female" + "\\" + "Female" );
+		File[] imgF = pathF.listFiles();
+		for(int i = 0, j = 0; 	i < imgM.length && j < imgF.length; i++, j++) { //for all pictures in file
+			if(imgF[j].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
+				continue;
+                        String filenameM = pathM +  "\\" + imgM[i].getName();
+                        String filenameF = pathF +  "\\" + imgF[j].getName();
+                        int[][] picture;
+                        if(r.nextDouble() < 0.5){
+                            picture = readPicture(filenameF);
+                            if(test){
+                                testNN(picture);
+                            }else{
+                                trainNN(picture, 0, write);
+                            }
+                            //j++;
+                        }else{
+                            picture = readPicture(filenameM);
+                            if(test){
+                                testNN(picture);
+                            }else{
+                                trainNN(picture, 1, write);
+                            }
+                            
+                            //i++;
+                        }
+                        
+                        
+		}
+    }
+    
+    public static void readTurns(boolean test, double answer, boolean write){
+		File pathM = new File(System.getProperty("user.dir")+ "\\" + "Male" + "\\" + "Male" );
+		File[] imgM = pathM.listFiles();
+                File pathF = new File(System.getProperty("user.dir")+ "\\" + "Female" + "\\" + "Female" );
+		File[] imgF = pathF.listFiles();
+		for(int i = 0, j = 0; 	i < imgM.length && j < imgF.length; i++) { //for all pictures in file
+			if(imgF[j].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
+				continue;
+                        String filenameM = pathM +  "\\" + imgM[i].getName();
+                        String filenameF = pathF +  "\\" + imgF[j].getName();
+                        int[][] picture;
+                        if( i % 2 == 0){
+                            picture = readPicture(filenameF);
+                            if(test){
+                                testNN(picture);
+                            }else{
+                                trainNN(picture, 0, write);
+                            }
+                        }else{
+                            picture = readPicture(filenameM);
+                            if(test){
+                                testNN(picture);
+                            }else{
+                                trainNN(picture, 1, write);
+                            }
+                            
+                            j++;
+                        }
+                        
+                        
 		}
     }
     
@@ -198,12 +322,25 @@ public class NNProject {
     
     
     
-    public static void trainNN(int[][] img, int answer){
-        System.out.println(brain.encode(img));
+    public static void trainNN(int[][] img, double answer, boolean write){
+        double result = brain.encode(img);
+        brain.correct(answer, result);
+        if(write){
+            if(result < 0.5){
+                System.out.println("Woman " + result);
+            }else{
+                System.out.println("Man " + result);
+            }
+        }
     }
     
     public static void testNN(int[][] img){
-        
+        double result = brain.encode(img);
+        if(result < 0.5){
+            System.out.println("Woman " + result);
+        }else{
+            System.out.println("Man " + result);
+        }
     }
         
     
