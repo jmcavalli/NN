@@ -16,11 +16,11 @@ import java.util.*;
 class Network{
     hiddenLayer hidden = new hiddenLayer();
     OutputNode output = new OutputNode();
-    double learnRate = 0.001;
+    double learnRate = 0.03;
     
-    public void setUp(){
-        hidden.setUp();
-        output.setUp(8);
+    public void setUp(int num){
+        hidden.setUp(num);
+        output.setUp(num);
     }
     public double encode(int[][] img){
         double[] hiddenOutput;
@@ -39,19 +39,21 @@ class Network{
 class hiddenLayer{
     HiddenNode[] hiddenNodes;
     
-    public void setUp(){
-        hiddenNodes = new HiddenNode[8];
+    public void setUp(int num){
+        hiddenNodes = new HiddenNode[num];
         for(int i = 0; i < hiddenNodes.length; i++)
             hiddenNodes[i] = new HiddenNode();
         
-        hiddenNodes[0].setUp(39, 16, 89, 37);
-        hiddenNodes[1].setUp(47, 39, 61, 56);
-        hiddenNodes[2].setUp(67, 39, 80, 56);
-        hiddenNodes[3].setUp(58, 45, 71, 63);
-        hiddenNodes[4].setUp(43, 40, 86, 80);
-        hiddenNodes[5].setUp(45, 61, 84, 71);
-        hiddenNodes[6].setUp(47, 69, 84, 83);
-        hiddenNodes[7].setUp(54, 79, 73, 104);
+        for(int i = 0; i < num/8; i++){
+        hiddenNodes[i + 0].setUp(39, 16, 89, 37);
+        hiddenNodes[i + 1].setUp(47, 39, 61, 56);
+        hiddenNodes[i + 2].setUp(67, 39, 80, 56);
+        hiddenNodes[i + 3].setUp(58, 45, 71, 63);
+        hiddenNodes[i + 4].setUp(43, 40, 86, 80);
+        hiddenNodes[i + 5].setUp(45, 61, 84, 71);
+        hiddenNodes[i + 6].setUp(47, 69, 84, 83);
+        hiddenNodes[i + 7].setUp(54, 79, 73, 104);
+        }
         //hiddenNodes[8].setUp(86, 80, 127, 119);
     }
     public double[] encode(int img[][]){
@@ -189,17 +191,20 @@ public class NNProject {
 		return;
 	}
         brain = new Network();
+        int num = 800;
         
 	if(args[0].equals("-train")) {
-            brain.setUp();
+            brain.setUp(num);
             readDirectory("Female", false, 0, true);
             readDirectory("Male", false, 1, true);
 	}
 	else if(args[0].equals("-test")) {
-            brain.setUp();
-                readRandom(300, false, 1, false);
-                //readDirectory("Female", false, 0, false);
-                //readDirectory("Male", false, 1, false);
+            brain.setUp(num);
+                readRandom(3000, false, 1, false);
+            //for(int i = 0; i < 30; i++){
+            //    readDirectory("Female", false, 0, false);
+            //    readDirectory("Male", false, 1, false);
+            //}
             readDirectory("Female", true, 0, true);
 	}
 	else {
