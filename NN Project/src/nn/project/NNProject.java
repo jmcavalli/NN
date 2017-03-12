@@ -16,7 +16,7 @@ import java.util.*;
 class Network{
     hiddenLayer hidden = new hiddenLayer();
     OutputNode output = new OutputNode();
-    double learnRate = 0.03;
+    double learnRate = 0.05;
     
     public void setUp(int num){
         hidden.setUp(num);
@@ -44,15 +44,22 @@ class hiddenLayer{
         for(int i = 0; i < hiddenNodes.length; i++)
             hiddenNodes[i] = new HiddenNode();
         
-        for(int i = 0; i < num/8; i++){
-        hiddenNodes[i + 0].setUp(39, 16, 89, 37);
-        hiddenNodes[i + 1].setUp(47, 39, 61, 56);
-        hiddenNodes[i + 2].setUp(67, 39, 80, 56);
-        hiddenNodes[i + 3].setUp(58, 45, 71, 63);
-        hiddenNodes[i + 4].setUp(43, 40, 86, 80);
-        hiddenNodes[i + 5].setUp(45, 61, 84, 71);
-        hiddenNodes[i + 6].setUp(47, 69, 84, 83);
-        hiddenNodes[i + 7].setUp(54, 79, 73, 104);
+        for(int i = 0; i < num; i++){
+//        hiddenNodes[i + 0].setUp(29, 14, 98, 119);
+//        hiddenNodes[i + 0].setUp(47, 39, 61, 56);
+//        hiddenNodes[i + 1].setUp(67, 39, 80, 56);
+//        hiddenNodes[i + 0].setUp(58, 45, 71, 63);
+//        hiddenNodes[i + 0].setUp(37, 14, 87, 84);
+//        hiddenNodes[i + 1].setUp(45, 61, 84, 71);
+//        hiddenNodes[i + 1].setUp(47, 69, 84, 83);
+//        hiddenNodes[i + 0].setUp(54, 79, 73, 104);
+        hiddenNodes[i + 0].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 2].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 3].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 4].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 5].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 6].setUp(0, 0, 128, 120);
+//        hiddenNodes[i + 7].setUp(0, 0, 128, 120);
         }
         //hiddenNodes[8].setUp(86, 80, 127, 119);
     }
@@ -91,7 +98,7 @@ class OutputNode{
         weights = new double[hiddenNum];
         memory = new double[hiddenNum];
         for(int i = 0; i < hiddenNum; i++)
-            weights[i] = -1 + 2 * r.nextDouble();
+            weights[i] = -0.01 + 0.02 * r.nextDouble();
     }
     public double encode(double[] inputs){
         double sum = 0;
@@ -145,7 +152,7 @@ class HiddenNode{
         //prime weights with random small numbers
         for(int i  = 0; i < brx - tlx; i++)
             for(int j = 0; j < bry - tly; j++){
-                weights[i][j] = -1 + 2 * r.nextDouble();
+                weights[i][j] = -0.01 + 0.02 * r.nextDouble();
             }
     }
     public double encode(int[][] img){
@@ -191,7 +198,7 @@ public class NNProject {
 		return;
 	}
         brain = new Network();
-        int num = 800;
+        int num = 80;
         
 	if(args[0].equals("-train")) {
             brain.setUp(num);
@@ -200,12 +207,14 @@ public class NNProject {
 	}
 	else if(args[0].equals("-test")) {
             brain.setUp(num);
-                readRandom(3000, false, 1, false);
-            //for(int i = 0; i < 30; i++){
+            //readTurns(false, 1, false);
+            for(int i = 0; i < 30; i++){
+                readTurns(false, "Man1", "Woman1", 1, false);
             //    readDirectory("Female", false, 0, false);
             //    readDirectory("Male", false, 1, false);
-            //}
-            readDirectory("Female", true, 0, true);
+            }
+            readDirectory("Test1", true, 0, true);
+            visualize();
 	}
 	else {
 		System.out.println("You put in the wrong arguments noob");
@@ -213,7 +222,7 @@ public class NNProject {
     }
     
     public static void readDirectory(String dirname, boolean test, double answer, boolean write){
-		File path = new File(System.getProperty("user.dir")+ "\\" + dirname + "\\" + dirname );
+		File path = new File(System.getProperty("user.dir")+ "\\" + dirname );
 		File[] img = path.listFiles();
 		for(int i = 0; 	i < img.length; i++) { //for all pictures in file
 			if(img[i].getName().equals("b") || img[i].getName().equals("a")) //ignore b and a
@@ -221,6 +230,7 @@ public class NNProject {
                         String filename = path +  "\\" + img[i].getName();
 			int[][] picture = readPicture(filename);
                         if(test){
+                            System.out.print(img[i].getName() + " ");
                             testNN(picture);
                         }else{
                             trainNN(picture, answer, write);
@@ -231,9 +241,9 @@ public class NNProject {
     public static void readRandom(int times, boolean test, double answer, boolean write){
                 Random r = new Random();
                 Random r1 = new Random();
-		File pathM = new File(System.getProperty("user.dir")+ "\\" + "Male" + "\\" + "Male" );
+		File pathM = new File(System.getProperty("user.dir")+ "\\" + "Male" );
 		File[] imgM = pathM.listFiles();
-                File pathF = new File(System.getProperty("user.dir")+ "\\" + "Female" + "\\" + "Female" );
+                File pathF = new File(System.getProperty("user.dir")+ "\\" + "Female" );
 		File[] imgF = pathF.listFiles();
 		for(int i = 0, j = 0, k = times; k >= 0; k--) { //for all pictures in file
                     i = (int)(Math.floor(imgM.length * r1.nextDouble()));
@@ -266,25 +276,25 @@ public class NNProject {
 		}
     }
     
-    public static void readTurns(boolean test, double answer, boolean write){
-		File pathM = new File(System.getProperty("user.dir")+ "\\" + "Male" + "\\" + "Male" );
+    public static void readTurns(boolean test, String male, String female, double answer, boolean write){
+		File pathM = new File(System.getProperty("user.dir")+ "\\" + male );
 		File[] imgM = pathM.listFiles();
-                File pathF = new File(System.getProperty("user.dir")+ "\\" + "Female" + "\\" + "Female" );
+                File pathF = new File(System.getProperty("user.dir")+ "\\" + female );
 		File[] imgF = pathF.listFiles();
-		for(int i = 0, j = 0; 	i < imgM.length && j < imgF.length; i++) { //for all pictures in file
-			if(imgF[j].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
+		for(int i = 0; 	i < imgM.length && i < imgF.length; i++) { //for all pictures in file
+			if(imgF[i].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
 				continue;
                         String filenameM = pathM +  "\\" + imgM[i].getName();
-                        String filenameF = pathF +  "\\" + imgF[j].getName();
+                        String filenameF = pathF +  "\\" + imgF[i].getName();
                         int[][] picture;
-                        if( i % 2 == 0){
+                        
                             picture = readPicture(filenameF);
                             if(test){
                                 testNN(picture);
                             }else{
                                 trainNN(picture, 0, write);
                             }
-                        }else{
+                        
                             picture = readPicture(filenameM);
                             if(test){
                                 testNN(picture);
@@ -292,8 +302,8 @@ public class NNProject {
                                 trainNN(picture, 1, write);
                             }
                             
-                            j++;
-                        }
+                            
+                        
                         
                         
 		}
@@ -337,7 +347,7 @@ public class NNProject {
         brain.correct(answer, result);
         if(write){
             if(result < 0.5){
-                System.out.println("Woman " + result);
+                System.out.println("Woman " + (1 - result));
             }else{
                 System.out.println("Man " + result);
             }
@@ -347,9 +357,24 @@ public class NNProject {
     public static void testNN(int[][] img){
         double result = brain.encode(img);
         if(result < 0.5){
-            System.out.println("Woman " + result);
+            System.out.println("Woman " + (1 - result));
         }else{
             System.out.println("Man " + result);
+        }
+    }
+    
+    public static void visualize(){
+        try{
+            PrintWriter newfile = new PrintWriter(System.getProperty("user.dir") + "\\" + "visualization.txt");
+            HiddenNode temp = brain.hidden.hiddenNodes[0];
+            for(int y = 0; y < temp.bottomrighty - temp.toplefty; y++){
+                for(int x = 0; x < temp.bottomrightx - temp.topleftx; x++){
+                    newfile.print(Math.round(100 * temp.weights[x][y]) + " ");
+                }
+                newfile.println();
+            }
+            
+        }catch(IOException e){
         }
     }
         
