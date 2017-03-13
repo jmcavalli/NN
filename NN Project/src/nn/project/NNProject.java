@@ -45,14 +45,14 @@ class hiddenLayer{
             hiddenNodes[i] = new HiddenNode();
         
         for(int i = 0; i < num; i++){
-//        hiddenNodes[i + 0].setUp(29, 14, 98, 119);
-//        hiddenNodes[i + 0].setUp(47, 39, 61, 56);
-//        hiddenNodes[i + 1].setUp(67, 39, 80, 56);
-//        hiddenNodes[i + 0].setUp(58, 45, 71, 63);
-//        hiddenNodes[i + 0].setUp(37, 14, 87, 84);
-//        hiddenNodes[i + 1].setUp(45, 61, 84, 71);
-//        hiddenNodes[i + 1].setUp(47, 69, 84, 83);
-//        hiddenNodes[i + 0].setUp(54, 79, 73, 104);
+//        hiddenNodes[i + 0].setUp(40, 16, 84, 83);
+//        hiddenNodes[i + 1].setUp(47, 39, 61, 56);
+//        hiddenNodes[i + 2].setUp(67, 39, 80, 56);
+//        hiddenNodes[i + 3].setUp(58, 45, 71, 63);
+//        hiddenNodes[i + 4].setUp(37, 14, 87, 84);
+//        hiddenNodes[i + 5].setUp(45, 61, 84, 71);
+//        hiddenNodes[i + 6].setUp(47, 69, 84, 83);
+//        hiddenNodes[i + 7].setUp(54, 79, 73, 104);
         hiddenNodes[i + 0].setUp(0, 0, 128, 120);
 //        hiddenNodes[i + 2].setUp(0, 0, 128, 120);
 //        hiddenNodes[i + 3].setUp(0, 0, 128, 120);
@@ -146,7 +146,9 @@ class HiddenNode{
         bottomrightx = brx;
         bottomrighty = bry;
         weights = new double[brx - tlx][bry - tly];
+        //weights = new double[128][120];
         memory = new double[brx - tlx][bry - tly];
+        //memory = new double[128][120];
         Random r = new Random();
         
         //prime weights with random small numbers
@@ -154,6 +156,10 @@ class HiddenNode{
             for(int j = 0; j < bry - tly; j++){
                 weights[i][j] = -0.01 + 0.02 * r.nextDouble();
             }
+//        for(int i  = tlx; i < brx; i++)
+//            for(int j = tly; j < bry; j++){
+//                weights[i][j] = -0.01 + 0.02 * r.nextDouble();
+//            }
     }
     public double encode(int[][] img){
         int sum = 0;
@@ -198,7 +204,7 @@ public class NNProject {
 		return;
 	}
         brain = new Network();
-        int num = 80;
+        int num = 20;
         
 	if(args[0].equals("-train")) {
             brain.setUp(num);
@@ -208,13 +214,13 @@ public class NNProject {
 	else if(args[0].equals("-test")) {
             brain.setUp(num);
             //readTurns(false, 1, false);
-            for(int i = 0; i < 30; i++){
-                readTurns(false, "Man1", "Woman1", 1, false);
+            //for(int i = 0; i < 10; i++){
+                readTurns(4, false, "Man3", "Woman3", 1, false);
             //    readDirectory("Female", false, 0, false);
             //    readDirectory("Male", false, 1, false);
-            }
-            readDirectory("Test1", true, 0, true);
-            visualize();
+            //}
+            readDirectory("Test3", true, 0, true);
+            visualize(num);
 	}
 	else {
 		System.out.println("You put in the wrong arguments noob");
@@ -276,16 +282,25 @@ public class NNProject {
 		}
     }
     
-    public static void readTurns(boolean test, String male, String female, double answer, boolean write){
+    public static void readTurns(int times, boolean test, String male, String female, double answer, boolean write){
 		File pathM = new File(System.getProperty("user.dir")+ "\\" + male );
 		File[] imgM = pathM.listFiles();
                 File pathF = new File(System.getProperty("user.dir")+ "\\" + female );
 		File[] imgF = pathF.listFiles();
-		for(int i = 0; 	i < imgM.length && i < imgF.length; i++) { //for all pictures in file
-			if(imgF[i].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
+                int k = 0;
+		for(int i = 0, j = 0; k < times; i++, j++) { //for all pictures in file
+                    if(i >= imgM.length){
+                        i = 0;
+                        k++;
+                    }
+                    if(j >= imgF.length){
+                        k++;
+                        j = 0;
+                    }
+			if(imgF[j].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
 				continue;
                         String filenameM = pathM +  "\\" + imgM[i].getName();
-                        String filenameF = pathF +  "\\" + imgF[i].getName();
+                        String filenameF = pathF +  "\\" + imgF[j].getName();
                         int[][] picture;
                         
                             picture = readPicture(filenameF);
@@ -363,17 +378,29 @@ public class NNProject {
         }
     }
     
-    public static void visualize(){
+    public static void visualize(int num){
         try{
-            PrintWriter newfile = new PrintWriter(System.getProperty("user.dir") + "\\" + "visualization.txt");
-            HiddenNode temp = brain.hidden.hiddenNodes[0];
+            for(int i = 0; i < num; i++){
+            PrintWriter newfile = new PrintWriter(System.getProperty("user.dir") + "\\" + "visualization" + i + ".txt");
+            HiddenNode temp = brain.hidden.hiddenNodes[i];
             for(int y = 0; y < temp.bottomrighty - temp.toplefty; y++){
                 for(int x = 0; x < temp.bottomrightx - temp.topleftx; x++){
-                    newfile.print(Math.round(100 * temp.weights[x][y]) + " ");
+                    if(temp.weights[x][y] > 0.01)
+                        newfile.print("8" + " ");
+                    else if(temp.weights[x][y] > 0.001)
+                        newfile.print("O" + " ");
+                    else if(temp.weights[x][y] < -0.001)
+                        newfile.print("-" + " ");
+                    else if(temp.weights[x][y] < -0.01)
+                        newfile.print("=" + " ");
+                    else
+                        newfile.print(" " + " ");
+                    //newfile.print(Math.round(100 * temp.weights[x][y]) + " ");
                 }
                 newfile.println();
             }
-            
+            newfile.close();
+            }
         }catch(IOException e){
         }
     }
