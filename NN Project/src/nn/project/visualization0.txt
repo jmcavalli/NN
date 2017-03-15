@@ -1,0 +1,33 @@
+- - - -   O O O - O 8 - O O 8 O O O   O - O   O - 8 -   - - 8 O O 8 - - 8 O O 8 O     - - O - 
+8   - O O - - - 8   O - O -   O 8 8 O - O - O 8 O O O O O - - 8 8 8 - O O - 8 O - O O O - 8 8 
+  O   - O 8 O -   8 O O O O O 8 O 8 - - 8 O O - O O O - O O O O O   O - -     O O - - 8   8 8 
+  8 O O - 8 O - - O   - - O O - O - O O O - 8 O O - O -     - - - 8 O - O O 8 O - O 8 O 8   O 
+  O 8 8 O O O - O O O O   - - - -   O - O O 8 - O 8 O - 8 8 - 8 O O - O O O   O - - O 8 - O O 
+  O O O O O O O O O O O O - O - 8 8 O - O O - - O   8   - - O -   8 O 8 - O O O O   O O 8 - - 
+O   - O O - 8 - O - O O - - O 8 O O - O 8 - - O O O - O O O 8 - O - O - O - - O O - O O O   8 
+  - 8   8 - O O O - O O O   - 8 - O O O - - O O O - O O - O - O - - O O - 8 - O O - -   O 8 - 
+- - - O 8 - O   O O - O - O - 8 O - 8 O O 8 O - - - O 8 O - 8 - O O - 8 - - 8 O 8 O 8 - O 8 - 
+8 O - O O O   -   - 8   O 8 O 8 - - 8 O O   - 8 O O     O - - O O   8 O O O O O - O   8 O - O 
+  O O   - O O O O O O O 8 - -   - - O - - - - - 8 - - O 8 - - - - - - O O   O - O - - O - O O 
+O O O - O - - O - - - O - O O 8 O   O O - - - O -     8 8 8   8   - - O O O O - O O 8 O O O   
+O O - - O O O - 8 O 8 8 O 8 O O O O O O O O - -   O - O 8 - - O - O O     O O O   O O O O O - 
+O O O O - - O O   O - O O O 8 8 8 O O   O O 8 O O O - 8 O O 8 - O   - O - O 8   - O 8 O O O O 
+O - - 8 O O   O 8 - O - O O O - - - 8 - O O O 8 - - O O - O O O 8     O O - O 8 8 8 O - O O O 
+  O - O   8 O - - O - O 8 - O   - O - -   O O - - O 8 - 8 O - - 8 O 8 -   - O O 8   O O -   - 
+O 8 O O -   O O   - O - - - O O O - O - - - O O O 8 O O O O O O   O O - O 8 8 8 - - 8 - O -   
+  - - - O   O O - O 8 O - O O 8 O   O O - O O O -   O O O O O O O - O   O O O   8 O - - 8   O 
+O - 8 - 8 8 O   O O - - 8 - - 8 - - - O 8 O - O O - - O O O 8 8   O - - - O - 8 8 O     8 8 O 
+-   O   O 8 O O - 8 O - O O O O - - 8 - - 8 8 O - -   O O O - O O O - O 8 O - 8 8 O O - - - O 
+8 - O - O - - O - O 8 - O - 8 - - O O O O     O 8 O O 8 O - - - O O 8 8 8 O 8 8 O 8   O O   8 
+- 8 O O O O 8 O - O 8 - O O     -     - - 8 O - O O O     O O - - - O - 8 - O O O - O O O - O 
+O O - O O O 8 O O 8 - O O O 8 8 8 - O - O O O O   - O 8 O - 8 O O O 8 O - - 8 - 8 8 8 8 O 8 8 
+8 O   8 O 8 O 8 O O - 8 - O O O 8 - O - - O O O O - O O 8 - 8 O     8 O O - 8 O   O O - 8 8 O 
+8 O - O O 8 O 8 8 O O O O   8 - - O   - O O O O O 8 O O O O 8 - O -   8 O O O - O - 8 - O 8 8 
+O - O - O 8 O O   8 O O 8 O 8 - O   O O - O 8 O O O - O 8 O 8 8 O O O O O - O 8 O O 8 -   8 - 
+- O - O O O O 8   - - - - O O O - 8 8 O O 8 8 O O - 8 - 8   O 8 O O O O O 8 O 8 O 8   8 8 O O 
+O 8 - O 8 - O O O O 8 - O   - - -   O   O 8 8 8 O O   - O 8 O 8 8 O O O 8 - O 8   8 8 O 8 8 O 
+O - O O - - O 8 O O - - 8 - 8 - O O O O O - O O - O O 8   8   O 8   O 8     O 8 - O O 8 -   O 
+- O - O O O O - 8 - 8 O 8 O O O O 8   -   O O 8 O O O - 8 O O 8 8 O   O 8   - 8 O O 8 - 8 O   
+O - O O O   O - O - - O O   O   8 O O 8 8 O O 8 O 8 O O 8 - O   O   8 8 O O 8 - 8 O O 8 O 8 8 
+O O O O O - O -   O - -   - O O O   - O - O - 8 O O   - 8 - O O O 8   8 - - O O 8 O O - O O 8 
+8 8 O   8 - - - O - O   - - O O 8 - O O 8 O 8 O O O -   O O 8 8 O 8 O 8 8 - O O     O   O 8 8 

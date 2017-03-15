@@ -347,9 +347,9 @@ public class NNProject {
     public static void testNN(int[][] img){
         double result = brain.encode(img);
         if(result < 0.5){
-            System.out.println("Woman " + (1 - result));
+            System.out.println("Woman " + ((0.5-result)/0.5));
         }else{
-            System.out.println("Man " + result);
+            System.out.println("Man " + ((result-0.5)/0.5));
         }
     }
     
