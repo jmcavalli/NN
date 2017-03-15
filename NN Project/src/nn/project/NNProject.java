@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nn.project;
 
 import java.io.*;
 import java.util.*;
@@ -45,23 +44,8 @@ class hiddenLayer{
             hiddenNodes[i] = new HiddenNode();
         
         for(int i = 0; i < num; i++){
-//        hiddenNodes[i + 0].setUp(40, 16, 84, 83);
-//        hiddenNodes[i + 1].setUp(47, 39, 61, 56);
-//        hiddenNodes[i + 2].setUp(67, 39, 80, 56);
-//        hiddenNodes[i + 3].setUp(58, 45, 71, 63);
-//        hiddenNodes[i + 4].setUp(37, 14, 87, 84);
-//        hiddenNodes[i + 5].setUp(45, 61, 84, 71);
-//        hiddenNodes[i + 6].setUp(47, 69, 84, 83);
-//        hiddenNodes[i + 7].setUp(54, 79, 73, 104);
         hiddenNodes[i + 0].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 2].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 3].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 4].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 5].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 6].setUp(0, 0, 128, 120);
-//        hiddenNodes[i + 7].setUp(0, 0, 128, 120);
         }
-        //hiddenNodes[8].setUp(86, 80, 127, 119);
     }
     public double[] encode(int img[][]){
         double[] answer = new double[hiddenNodes.length];
@@ -146,9 +130,7 @@ class HiddenNode{
         bottomrightx = brx;
         bottomrighty = bry;
         weights = new double[brx - tlx][bry - tly];
-        //weights = new double[128][120];
         memory = new double[brx - tlx][bry - tly];
-        //memory = new double[128][120];
         Random r = new Random();
         
         //prime weights with random small numbers
@@ -156,10 +138,6 @@ class HiddenNode{
             for(int j = 0; j < bry - tly; j++){
                 weights[i][j] = -0.01 + 0.02 * r.nextDouble();
             }
-//        for(int i  = tlx; i < brx; i++)
-//            for(int j = tly; j < bry; j++){
-//                weights[i][j] = -0.01 + 0.02 * r.nextDouble();
-//            }
     }
     public double encode(int[][] img){
         int sum = 0;
@@ -205,22 +183,19 @@ public class NNProject {
 	}
         brain = new Network();
         int num = 20;
-        
+        if(args.length != 5) {
+		System.out.println("Please put in arguments like: java NNProject -train <dir> <dir> -test <dir>");
+		return;
+	}	
 	if(args[0].equals("-train")) {
             brain.setUp(num);
-            readDirectory("Female", false, 0, true);
-            readDirectory("Male", false, 1, true);
+	    readTurns(4, false, args[1], args[2], 1, false);
 	}
-	else if(args[0].equals("-test")) {
-            brain.setUp(num);
-            //readTurns(false, 1, false);
-            //for(int i = 0; i < 10; i++){
-                readTurns(4, false, "Man3", "Woman3", 1, false);
-            //    readDirectory("Female", false, 0, false);
-            //    readDirectory("Male", false, 1, false);
-            //}
-            readDirectory("Test3", true, 0, true);
-            visualize(num);
+	if(args[3].equals("-test")) {
+           // brain.setUp(num);
+          //  readTurns(4, false, "Man5", "Woman5", 1, false);
+            readDirectory(args[4], true, 0, true);
+            //visualize(num);
 	}
 	else {
 		System.out.println("You put in the wrong arguments noob");
@@ -228,12 +203,12 @@ public class NNProject {
     }
     
     public static void readDirectory(String dirname, boolean test, double answer, boolean write){
-		File path = new File(System.getProperty("user.dir")+ "\\" + dirname );
+		File path = new File(dirname);
 		File[] img = path.listFiles();
 		for(int i = 0; 	i < img.length; i++) { //for all pictures in file
 			if(img[i].getName().equals("b") || img[i].getName().equals("a")) //ignore b and a
 				continue;
-                        String filename = path +  "\\" + img[i].getName();
+                        String filename = path +  "//" + img[i].getName();
 			int[][] picture = readPicture(filename);
                         if(test){
                             System.out.print(img[i].getName() + " ");
@@ -283,9 +258,9 @@ public class NNProject {
     }
     
     public static void readTurns(int times, boolean test, String male, String female, double answer, boolean write){
-		File pathM = new File(System.getProperty("user.dir")+ "\\" + male );
+		File pathM = new File(male);
 		File[] imgM = pathM.listFiles();
-                File pathF = new File(System.getProperty("user.dir")+ "\\" + female );
+                File pathF = new File(female);
 		File[] imgF = pathF.listFiles();
                 int k = 0;
 		for(int i = 0, j = 0; k < times; i++, j++) { //for all pictures in file
@@ -299,8 +274,8 @@ public class NNProject {
                     }
 			if(imgF[j].getName().equals("b") || imgM[i].getName().equals("a")) //ignore b and a
 				continue;
-                        String filenameM = pathM +  "\\" + imgM[i].getName();
-                        String filenameF = pathF +  "\\" + imgF[j].getName();
+                        String filenameM = pathM +  "//" + imgM[i].getName();
+                        String filenameF = pathF +  "//" + imgF[j].getName();
                         int[][] picture;
                         
                             picture = readPicture(filenameF);
